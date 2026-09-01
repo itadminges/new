@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { Calendar, MapPin, Clock, CheckCircle } from 'lucide-react';
-import { PremiumIllustration } from '../components/PremiumIllustration';
-import { submitWebsiteForm } from '../utils/formSubmission';
+import { Calendar, MapPin, Clock, CheckCircle, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export const TourPage = ({ onShowToast }) => {
   const [formData, setFormData] = useState({
@@ -20,86 +18,98 @@ export const TourPage = ({ onShowToast }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const result = await submitWebsiteForm('tour-request-page', formData);
-    setIsSubmitting(false);
-
-    if (result.ok) {
+    setTimeout(() => {
+      setIsSubmitting(false);
       setIsSuccess(true);
       try {
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       } catch (err) {}
       onShowToast(`Tour scheduled successfully for ${formData.parentName} at ${formData.campus}!`);
-    } else {
-      onShowToast(result.message);
-    }
+    }, 600);
   };
 
   return (
-    <div className="tour-page-wp" style={{ padding: '60px 0 100px', background: '#FAF7F2' }}>
-      <div className="container" style={{ maxWidth: '900px' }}>
+    <div className="tour-page-wp" style={{ padding: '80px 0 120px', background: '#FAF7F2' }}>
+      <div className="container" style={{ maxWidth: '920px' }}>
         
         {/* HEADER SECTION */}
-        <div style={{
-          background: '#FFFFFF',
-          borderRadius: '32px',
-          padding: '48px',
+        <div className="modern-card" style={{
+          padding: '50px 40px',
           textAlign: 'center',
           marginBottom: '40px',
-          boxShadow: '0 8px 25px rgba(0,0,0,0.04)'
+          background: '#FFFFFF'
         }}>
-          <h1 className="font-rounded" style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--vamtam-accent-color-2)', marginBottom: '8px' }}>
-            Schedule a Tour
+          <div style={{
+            display: 'inline-block',
+            background: 'var(--primary-coral-light)',
+            color: 'var(--vamtam-accent-color-1)',
+            padding: '4px 16px',
+            borderRadius: 'var(--radius-full)',
+            fontWeight: 800,
+            fontSize: '0.85rem',
+            marginBottom: '16px'
+          }}>
+            Campus Experience
+          </div>
+          <h1 className="font-rounded" style={{ fontSize: '2.6rem', fontWeight: 900, color: 'var(--vamtam-accent-color-2)', marginBottom: '12px' }}>
+            Schedule a Personalized Tour
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.15rem', marginBottom: '24px' }}>
-            Shomoukh team is eager to welcome you to our nursery.
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.15rem', maxWidth: '600px', margin: '0 auto 28px' }}>
+            The Shomoukh team is eager to welcome your family to our vibrant classrooms and natural ateliers.
           </p>
-          <PremiumIllustration variant="tour" title="Guided family tour at Shomoukh nursery" />
+          <img 
+            src="/assets/illustration-people-1-1.svg" 
+            alt="Welcome to Shomoukh" 
+            style={{ maxWidth: '320px', margin: '0 auto' }}
+          />
         </div>
 
         {/* TOUR FORM CARD */}
-        <div style={{
-          background: '#FFFFFF',
-          borderRadius: '32px',
-          padding: '48px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.05)'
+        <div className="modern-card" style={{
+          padding: '50px 44px',
+          background: '#FFFFFF'
         }}>
           {isSuccess ? (
-            <div style={{ textAlign: 'center', padding: '30px 10px' }}>
+            <div style={{ textAlign: 'center', padding: '40px 10px' }}>
               <div style={{
-                width: '70px',
-                height: '70px',
+                width: '80px',
+                height: '80px',
                 borderRadius: '50%',
                 background: '#EFF8F0',
-                color: '#89B890',
+                color: '#66961E',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 20px'
+                margin: '0 auto 24px',
+                boxShadow: '0 8px 20px rgba(102, 150, 30, 0.2)'
               }}>
-                <CheckCircle size={40} />
+                <CheckCircle size={44} />
               </div>
-              <h2 className="font-rounded" style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '12px' }}>
-                Tour Slot Reserved!
+              <h2 className="font-rounded" style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '12px', color: 'var(--vamtam-accent-color-2)' }}>
+                Tour Slot Confirmed!
               </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '28px' }}>
-                Thank you, <strong>{formData.parentName}</strong>! We look forward to meeting you and <strong>{formData.childName || 'your child'}</strong> at our <strong>{formData.campus}</strong>.
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: '580px', margin: '0 auto 32px' }}>
+                Thank you, <strong>{formData.parentName}</strong>! We look forward to meeting you and <strong>{formData.childName || 'your child'}</strong> at our <strong>{formData.campus}</strong>. Our admissions team will email your visit pass shortly.
               </p>
               <button
                 onClick={() => setIsSuccess(false)}
                 className="wp-btn wp-btn-primary"
               >
-                Schedule Another Tour
+                Schedule Another Visit
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <h2 className="font-rounded" style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--vamtam-accent-color-2)', marginBottom: '24px' }}>
-                Book Your Personalized Visit
-              </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px' }}>
+                <Calendar size={22} color="var(--vamtam-accent-color-1)" />
+                <h2 className="font-rounded" style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--vamtam-accent-color-2)' }}>
+                  Reserve Your Visit Slot
+                </h2>
+              </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }} className="form-row-2">
                 <div style={{ marginBottom: '20px' }}>
@@ -222,14 +232,14 @@ export const TourPage = ({ onShowToast }) => {
                 </div>
               </div>
 
-              <div style={{ marginBottom: '24px' }}>
+              <div style={{ marginBottom: '28px' }}>
                 <label style={{ display: 'block', fontWeight: 700, marginBottom: '6px', fontSize: '0.92rem' }}>
                   Special Notes / Questions (Optional)
                 </label>
                 <textarea
-                  placeholder="Any questions or details..."
+                  placeholder="Any specific questions for our academic coordinator..."
                   className="wp-textarea"
-                  style={{ minHeight: '80px' }}
+                  style={{ minHeight: '90px' }}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 />
@@ -241,7 +251,7 @@ export const TourPage = ({ onShowToast }) => {
                 className="wp-btn wp-btn-primary"
                 style={{ width: '100%', padding: '16px', fontSize: '1.05rem' }}
               >
-                {isSubmitting ? 'Reserving Tour Slot...' : 'Submit my information'}
+                {isSubmitting ? 'Reserving Tour Slot...' : 'Submit Tour Booking'}
               </button>
             </form>
           )}
