@@ -526,11 +526,7 @@ export const HomePage = ({ navigateTo, onOpenTourModal }) => {
       {/* SECTION 7: PATH & LEAVES ILLUSTRATION */}
       <section style={{
         padding: '60px 0 30px',
-        background: '#FAF7F2',
-        backgroundImage: 'url(/assets/path-1-1.svg)',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center bottom',
-        backgroundSize: 'contain'
+        background: '#FAF7F2'
       }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '40px', flexWrap: 'wrap' }}>
           <img src="/assets/leaf-2-1.svg" alt="" style={{ width: '60px' }} />
