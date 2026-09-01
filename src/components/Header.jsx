@@ -1,484 +1,287 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Phone, Menu, X, Calendar, ChevronDown, MapPin, Baby, Palette, Users, FileText, Home } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Phone, Menu, X, Calendar, Sparkles, MapPin } from 'lucide-react';
 import { siteData } from '../data/siteData';
 
 export const Header = ({ currentRoute, navigateTo, onOpenTourModal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState(null);
-  const headerRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const closeMenus = (event) => {
-      if (event.type === 'keydown' && event.key !== 'Escape') return;
-      if (event.type === 'pointerdown' && headerRef.current?.contains(event.target)) return;
-      setOpenMenu(null);
-    };
-
-    document.addEventListener('pointerdown', closeMenus);
-    document.addEventListener('keydown', closeMenus);
-    return () => {
-      document.removeEventListener('pointerdown', closeMenus);
-      document.removeEventListener('keydown', closeMenus);
-    };
-  }, []);
-
-  const navGroups = [
-    {
-      label: 'Explore',
-      key: 'explore',
-      items: [
-        { label: 'About Shomoukh', path: 'about', desc: 'Mission, philosophy, community', icon: Users },
-        { label: 'Programs', path: 'programs', desc: 'EYFS, Reggio, learning areas', icon: Baby },
-        { label: 'Enrichments', path: 'enrichments', desc: 'Ateliers, projects, movement', icon: Palette }
-      ]
-    },
-    {
-      label: 'Admissions',
-      key: 'admissions',
-      items: [
-        { label: 'Admission Process', path: 'admissions', desc: 'Steps, resources, enrollment', icon: FileText },
-        { label: 'Parent Documents', path: 'parents', desc: 'Forms, guides, family checklist', icon: FileText },
-        { label: 'Book a Visit', action: 'tour', desc: 'Schedule a guided campus tour', icon: Calendar }
-      ]
-    },
-    {
-      label: 'Campuses',
-      key: 'campuses',
-      items: siteData.campuses.map((campus) => ({
-        label: campus.name,
-        path: 'locations',
-        desc: campus.address.replace(', Sultanate of Oman', ''),
-        icon: MapPin
-      }))
-    }
-  ];
-
-  const groupActiveRoutes = {
-    explore: ['about', 'programs', 'enrichments'],
-    admissions: ['admissions', 'tour'],
-    campuses: ['locations']
-  };
-
-  const flatNavItems = [
-    { label: 'Home', path: 'home' },
-    ...navGroups.flatMap((group) => group.items.map((item) => ({ label: item.label, path: item.path, action: item.action }))),
-    { label: 'Parents', path: 'parents' },
+  const navItems = [
+    { label: 'Programs', path: 'programs' },
+    { label: 'Admission', path: 'admissions' },
+    { label: 'About', path: 'about' },
+    { label: 'Enrichments', path: 'enrichments' },
+    { label: 'Locations', path: 'locations' },
     { label: 'Contact Us', path: 'contact' }
   ];
 
-  const handleNavItem = (item) => {
-    setOpenMenu(null);
-    setMobileOpen(false);
-    if (item.action === 'tour') {
-      onOpenTourModal();
-    } else {
-      navigateTo(item.path);
-    }
-  };
-
   return (
     <>
-      <header ref={headerRef} style={{
-        position: 'fixed',
+      <header style={{
+        position: 'sticky',
         top: 0,
-        left: 0,
-        right: 0,
-        width: '100%',
         zIndex: 900,
-        background: isScrolled ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
-        backdropFilter: isScrolled ? 'blur(8px)' : 'none',
-        boxShadow: isScrolled ? '0 4px 20px rgba(0,0,0,0.06)' : 'none',
-        transition: 'all 0.3s ease',
-        padding: isScrolled ? '10px 0' : '16px 0',
-        borderBottom: isScrolled ? '1px solid rgba(0,0,0,0.05)' : 'none'
+        background: isScrolled ? 'rgba(255, 255, 255, 0.92)' : 'rgba(250, 247, 242, 0.85)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        boxShadow: isScrolled ? '0 10px 30px -10px rgba(10, 48, 58, 0.1)' : 'none',
+        transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        padding: isScrolled ? '12px 0' : '18px 0',
+        borderBottom: '1px solid rgba(10, 48, 58, 0.06)'
       }}>
         <div className="container" style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '24px'
+          alignItems: 'center'
         }}>
           {/* Logo */}
           <button 
             onClick={() => navigateTo('home')}
-            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}
-            aria-label="Go to home page"
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', transition: 'transform 0.2s ease' }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
             <img 
               src="/assets/Shomoukh-without-Tag-Logo.png" 
               alt="Shomoukh Nursery Logo" 
-              style={{ height: isScrolled ? '38px' : '54px', width: 'auto', transition: 'height 0.2s ease' }}
+              style={{ height: isScrolled ? '46px' : '52px', width: 'auto', transition: 'height 0.25s ease' }}
               onError={(e) => { e.target.src = "/assets/Logo-19-April-2021.png"; }}
             />
           </button>
 
           {/* Desktop Navigation Links */}
-          <nav className="desktop-menu header-nav">
-            <button
-              onClick={() => navigateTo('home')}
-              className={`header-link ${currentRoute === 'home' ? 'is-active' : ''}`}
-            >
-              Home
-            </button>
-            {navGroups.map((group) => {
-              const isActive = groupActiveRoutes[group.key]?.includes(currentRoute);
+          <nav style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: isScrolled ? 'rgba(250, 247, 242, 0.6)' : 'rgba(255, 255, 255, 0.6)',
+            padding: '4px 8px',
+            borderRadius: 'var(--radius-full)',
+            border: '1px solid rgba(10, 48, 58, 0.05)'
+          }} className="desktop-menu">
+            {navItems.map((item) => {
+              const isActive = currentRoute === item.path;
               return (
-                <div
-                  key={group.key}
-                  className="header-menu-group"
-                  onMouseEnter={() => setOpenMenu(group.key)}
-                  onMouseLeave={() => setOpenMenu(null)}
+                <button
+                  key={item.path}
+                  onClick={() => navigateTo(item.path)}
+                  style={{
+                    fontFamily: 'var(--font-rounded)',
+                    fontWeight: 700,
+                    fontSize: '0.96rem',
+                    color: isActive ? '#FFFFFF' : 'var(--vamtam-accent-color-2)',
+                    background: isActive ? 'var(--vamtam-accent-color-1)' : 'transparent',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    padding: '8px 18px',
+                    borderRadius: 'var(--radius-full)',
+                    boxShadow: isActive ? '0 4px 12px rgba(231, 76, 37, 0.3)' : 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.target.style.color = 'var(--vamtam-accent-color-1)';
+                      e.target.style.background = 'rgba(231, 76, 37, 0.08)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.target.style.color = 'var(--vamtam-accent-color-2)';
+                      e.target.style.background = 'transparent';
+                    }
+                  }}
                 >
-                  <button
-                    onClick={() => setOpenMenu(openMenu === group.key ? null : group.key)}
-                    onFocus={() => setOpenMenu(group.key)}
-                    className={`header-link ${isActive ? 'is-active' : ''}`}
-                    aria-expanded={openMenu === group.key}
-                    aria-haspopup="true"
-                  >
-                    <span>{group.label}</span>
-                    <ChevronDown size={15} className="header-chevron" />
-                  </button>
-                  <div className="header-dropdown" data-open={openMenu === group.key}>
-                    {group.items.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <button
-                          key={`${group.key}-${item.label}`}
-                          onClick={() => handleNavItem(item)}
-                          className="header-dropdown-item"
-                        >
-                          <span className="header-dropdown-icon"><Icon size={18} /></span>
-                          <span>
-                            <strong>{item.label}</strong>
-                            <small>{item.desc}</small>
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                  {item.label}
+                </button>
               );
             })}
-            <button
-              onClick={() => navigateTo('parents')}
-              className={`header-link ${currentRoute === 'parents' ? 'is-active' : ''}`}
-            >
-              Parents
-            </button>
-            <button
-              onClick={() => navigateTo('contact')}
-              className={`header-link ${currentRoute === 'contact' ? 'is-active' : ''}`}
-            >
-              Contact Us
-            </button>
           </nav>
 
-          <div className="header-actions">
-            <a
-              href={siteData.campuses[0].phoneLink}
+          {/* Right Contact & CTA */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <a 
+              href="tel:+96891400055"
               className="desktop-phone"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                fontFamily: 'var(--font-rounded)',
+                fontWeight: 700,
+                color: 'var(--vamtam-accent-color-2)',
+                fontSize: '0.94rem',
+                padding: '8px 16px',
+                borderRadius: 'var(--radius-full)',
+                background: 'rgba(255, 255, 255, 0.8)',
+                border: '1px solid rgba(10, 48, 58, 0.06)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--vamtam-accent-color-1)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(10, 48, 58, 0.06)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
             >
-              <span className="header-phone-icon">
-                <Phone size={16} />
-              </span>
-              <span>{siteData.campuses[0].phone}</span>
+              <div style={{
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                background: 'var(--primary-coral-light)',
+                color: 'var(--vamtam-accent-color-1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Phone size={14} />
+              </div>
+              <span>+968 9140 0055</span>
             </a>
 
             <button
               onClick={() => onOpenTourModal()}
-              className="wp-btn wp-btn-primary header-visit-btn"
+              className="wp-btn wp-btn-primary"
+              style={{ padding: '10px 22px', fontSize: '0.94rem' }}
             >
-              <Calendar size={16} />
+              <Calendar size={15} />
               <span>Book a Visit</span>
             </button>
 
+            {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="mobile-hamburger"
+              style={{
+                display: 'none',
+                padding: '10px',
+                borderRadius: '12px',
+                background: 'rgba(255, 255, 255, 0.8)',
+                color: 'var(--vamtam-accent-color-2)',
+                border: '1px solid rgba(10, 48, 58, 0.08)'
+              }}
               aria-label="Toggle menu"
-              aria-expanded={mobileOpen}
             >
-              {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
       </header>
 
-      <div className={`mobile-menu-overlay ${mobileOpen ? 'is-open' : ''}`} onClick={() => setMobileOpen(false)}>
-        <div className="mobile-menu-panel" onClick={(e) => e.stopPropagation()}>
-          <div>
-            <div className="mobile-menu-head">
-              <img src="/assets/Shomoukh-without-Tag-Logo.png" alt="Shomoukh Logo" style={{ height: '38px' }} />
-              <button onClick={() => setMobileOpen(false)} aria-label="Close menu">
-                <X size={24} />
-              </button>
-            </div>
-
-            <div className="mobile-menu-links">
-              {flatNavItems.filter((item, idx, arr) => {
-                const itemKey = item.action || item.path || item.label;
-                return arr.findIndex((candidate) => (candidate.action || candidate.path || candidate.label) === itemKey) === idx;
-              }).map((item) => (
-                <button
-                  key={`${item.label}-${item.path || item.action}`}
-                  onClick={() => { handleNavItem(item); setMobileOpen(false); }}
-                  className={currentRoute === item.path ? 'is-active' : ''}
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(10, 48, 58, 0.6)',
+          backdropFilter: 'blur(8px)',
+          zIndex: 999
+        }} onClick={() => setMobileOpen(false)}>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '85%',
+            maxWidth: '360px',
+            height: '100%',
+            background: '#FFFFFF',
+            padding: '32px 28px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            boxShadow: '-10px 0 40px rgba(0,0,0,0.2)'
+          }} onClick={(e) => e.stopPropagation()}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                <img src="/assets/Shomoukh-without-Tag-Logo.png" alt="Logo" style={{ height: '42px' }} />
+                <button 
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: '#FAF5F0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
                 >
-                  <Home size={18} />
-                  {item.label}
+                  <X size={20} />
                 </button>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          <div className="mobile-menu-actions">
-            <button onClick={() => { setMobileOpen(false); onOpenTourModal(); }} className="wp-btn wp-btn-primary">
-              Book a Visit
-            </button>
-            <a href={siteData.campuses[0].phoneLink} className="wp-btn wp-btn-outline">
-              Call {siteData.campuses[0].phone}
-            </a>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <button
+                  onClick={() => { navigateTo('home'); setMobileOpen(false); }}
+                  style={{
+                    textAlign: 'left',
+                    fontWeight: 700,
+                    fontSize: '1.05rem',
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    background: currentRoute === 'home' ? 'var(--primary-coral-light)' : 'transparent',
+                    color: currentRoute === 'home' ? 'var(--vamtam-accent-color-1)' : 'var(--vamtam-accent-color-2)'
+                  }}
+                >
+                  Home
+                </button>
+                {navItems.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => { navigateTo(item.path); setMobileOpen(false); }}
+                    style={{
+                      textAlign: 'left',
+                      fontWeight: 700,
+                      fontSize: '1.05rem',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      background: currentRoute === item.path ? 'var(--primary-coral-light)' : 'transparent',
+                      color: currentRoute === item.path ? 'var(--vamtam-accent-color-1)' : 'var(--vamtam-accent-color-2)'
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                onClick={() => { setMobileOpen(false); onOpenTourModal(); }}
+                className="wp-btn wp-btn-primary"
+                style={{ width: '100%' }}
+              >
+                <Calendar size={16} />
+                <span>Book a Visit</span>
+              </button>
+              <a
+                href="tel:+96891400055"
+                className="wp-btn wp-btn-outline"
+                style={{ width: '100%' }}
+              >
+                <Phone size={16} />
+                <span>Call +968 9140 0055</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <style>{`
-        .header-nav {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          flex: 1;
-          min-width: 0;
-        }
-        .header-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          min-height: 40px;
-          padding: 8px 11px;
-          border-radius: 999px;
-          color: var(--vamtam-accent-color-2);
-          font-family: var(--font-rounded);
-          font-weight: 700;
-          font-size: 0.94rem;
-          white-space: nowrap;
-          transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease;
-        }
-        .header-link:hover,
-        .header-link.is-active {
-          background: rgba(231, 76, 37, 0.1);
-          color: var(--vamtam-accent-color-1);
-        }
-        .header-chevron {
-          transition: transform 0.22s ease;
-        }
-        .header-menu-group {
-          position: relative;
-        }
-        .header-menu-group:hover .header-chevron,
-        .header-link[aria-expanded="true"] .header-chevron {
-          transform: rotate(180deg);
-        }
-        .header-dropdown {
-          position: absolute;
-          top: calc(100% + 12px);
-          left: 50%;
-          width: 320px;
-          padding: 10px;
-          border-radius: 18px;
-          background: rgba(255, 255, 255, 0.98);
-          box-shadow: 0 20px 45px rgba(10, 48, 58, 0.16);
-          border: 1px solid rgba(10, 48, 58, 0.08);
-          opacity: 0;
-          visibility: hidden;
-          transform: translate(-50%, 8px) scale(0.98);
-          transform-origin: top center;
-          transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
-        }
-        .header-dropdown[data-open="true"],
-        .header-menu-group:focus-within .header-dropdown {
-          opacity: 1;
-          visibility: visible;
-          transform: translate(-50%, 0) scale(1);
-        }
-        .header-dropdown-item {
-          width: 100%;
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-          padding: 12px;
-          border-radius: 12px;
-          text-align: left;
-          color: var(--text-main);
-          transition: background 0.2s ease, transform 0.2s ease;
-        }
-        .header-dropdown-item:hover {
-          background: var(--primary-coral-light);
-          transform: translateX(2px);
-        }
-        .header-dropdown-icon {
-          width: 34px;
-          height: 34px;
-          border-radius: 50%;
-          background: #FAF5F0;
-          color: var(--vamtam-accent-color-1);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          flex: 0 0 auto;
-        }
-        .header-dropdown-item strong,
-        .header-dropdown-item small {
-          display: block;
-        }
-        .header-dropdown-item small {
-          margin-top: 2px;
-          color: var(--text-muted);
-          font-size: 0.8rem;
-          line-height: 1.35;
-        }
-        .header-actions,
-        .desktop-phone,
-        .header-phone-icon {
-          display: flex;
-          align-items: center;
-        }
-        .header-actions {
-          gap: 14px;
-          flex-shrink: 0;
-        }
-        .desktop-phone {
-          gap: 8px;
-          font-family: var(--font-rounded);
-          font-weight: 700;
-          color: var(--vamtam-accent-color-2);
-          font-size: 0.95rem;
-          white-space: nowrap;
-        }
-        .header-phone-icon {
-          width: 34px;
-          height: 34px;
-          border-radius: 50%;
-          background: var(--primary-coral-light);
-          color: var(--vamtam-accent-color-1);
-          justify-content: center;
-        }
-        .header-visit-btn {
-          padding: 10px 18px !important;
-          font-size: 0.92rem !important;
-          white-space: nowrap;
-        }
-        .mobile-hamburger {
-          display: none;
-          align-items: center;
-          justify-content: center;
-          width: 42px;
-          height: 42px;
-          border-radius: 10px;
-          background: rgba(0,0,0,0.04);
-          color: var(--vamtam-accent-color-2);
-        }
-        .mobile-menu-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(10, 48, 58, 0.52);
-          backdrop-filter: blur(4px);
-          z-index: 999;
-          opacity: 0;
-          visibility: hidden;
-          transition: opacity 0.24s ease, visibility 0.24s ease;
-        }
-        .mobile-menu-overlay.is-open {
-          opacity: 1;
-          visibility: visible;
-        }
-        .mobile-menu-panel {
-          position: absolute;
-          top: 0;
-          right: 0;
-          width: min(86vw, 360px);
-          height: 100%;
-          background: #FFFFFF;
-          padding: 28px 24px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          box-shadow: -8px 0 25px rgba(0,0,0,0.15);
-          transform: translateX(100%);
-          transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .mobile-menu-overlay.is-open .mobile-menu-panel {
-          transform: translateX(0);
-        }
-        .mobile-menu-head,
-        .mobile-menu-links button {
-          display: flex;
-          align-items: center;
-        }
-        .mobile-menu-head {
-          justify-content: space-between;
-          margin-bottom: 28px;
-        }
-        .mobile-menu-links {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .mobile-menu-links button {
-          gap: 10px;
-          text-align: left;
-          font-weight: 700;
-          font-size: 1.05rem;
-          padding: 12px 10px;
-          border-radius: 12px;
-          color: var(--text-main);
-        }
-        .mobile-menu-links button.is-active,
-        .mobile-menu-links button:hover {
-          background: var(--primary-coral-light);
-          color: var(--vamtam-accent-color-1);
-        }
-        .mobile-menu-actions {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-        .mobile-menu-actions .wp-btn {
-          width: 100%;
-        }
-        @media (max-width: 1160px) {
-          .desktop-phone span:last-child {
-            display: none;
-          }
-          .header-visit-btn {
-            padding: 10px 14px !important;
-          }
-        }
-        @media (max-width: 1040px) {
+        @media (max-width: 992px) {
           .desktop-menu, .desktop-phone {
             display: none !important;
           }
           .mobile-hamburger {
             display: flex !important;
-          }
-          .header-actions {
-            margin-left: auto;
-          }
-        }
-        @media (max-width: 520px) {
-          .header-visit-btn {
-            display: none !important;
           }
         }
       `}</style>
